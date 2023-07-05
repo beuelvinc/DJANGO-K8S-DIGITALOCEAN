@@ -1,0 +1,40 @@
+version: "3.9"
+
+
+services:
+  web:
+    build:
+      context: .
+    image: "django-k8s-proj"
+    env_file:
+      - .env
+    environment:
+      - PORT=8020
+    ports:
+      - "8001:8020"
+    command: sh -c "chmod +X /app/migrate.sh && sh /app/migrate.sh && sh /app/entrypoint.sh"
+    depends_on:
+      - postgres_db
+    volumes:
+      - ./staticfiles:/app/staticfiles
+  postgres_db:
+    image: postgres
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - 5433:5432
+
+  redis_db:
+    image: redis
+    restart: on-failure
+    volumes:
+      - ./redis_data:/data/
+    env_file:
+      - .env
+    ports:
+      - 6380:6379
+
+
+
