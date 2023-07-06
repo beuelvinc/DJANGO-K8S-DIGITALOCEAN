@@ -84,8 +84,9 @@ target/
 *.pyc
 __pycache__/
 local_settings.py
-
+.kube/
 .env
+.env.prod
 db.sqlite3
 
 redis_data

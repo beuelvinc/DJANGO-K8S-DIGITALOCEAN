@@ -24,7 +24,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv("DEBUG") else False
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0',"*"]#for test
 
 # Application definition
 
@@ -85,6 +85,23 @@ DB_PORT = os.getenv("POSTGRES_PORT")
 
 DB_SET = all([DB_HOST, DB_DATABASE,
               DB_PASSWORD, DB_USERNAME, DB_PORT])
+DB_IGNORE_SSL = os.getenv('DB_IGNORE_SSL') == 'true'
+
+if DB_SET:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_DATABASE,
+            'USER': DB_USERNAME,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
+    }
+    if not DB_IGNORE_SSL:
+        DATABASES['default']['options'] = {
+            "sslmode": "require"
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
